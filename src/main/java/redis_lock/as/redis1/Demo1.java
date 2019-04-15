@@ -9,7 +9,7 @@ public class Demo1 {
 
 	public static void main(String[] args) {
 			for (int i = 0; i < 5; i++) {
-				new MyThread("线程" + i).start();
+				new MyThread("�߳�" + i).start();
 			}
 	}
 }
@@ -33,18 +33,18 @@ class MyThread extends Thread {
 		String requestId = UUID.randomUUID().toString();
 		int expireTime = 5000;
 
-		System.out.println(name + "锁前值为 " + jedis.get("a"));
+		System.out.println(name + " ��ȡ��֮ǰ  a ���� " + jedis.get("a"));
 
 		boolean b = get(jedis, lockKey, requestId, expireTime);
 		if (b) {
-			System.out.println(name + "锁成功后查询值为" + jedis.get("lockKey"));
-			if (Long.valueOf(jedis.get("a")) == 0) {
-				System.out.println("无货了");
-				// 退出当前线程
+			System.out.println(name + "��ȡ���ɹ�" + "����ID�ǣ�" + jedis.get("lockKey"));
+			if (Long.valueOf(jedis.get("a")) == 20) {
+				System.out.println("���sasDsaddsdDsd的���ˣ�������Ʒ�౻������ϣ�");
+				// ��ô�˳�
 				Thread.currentThread().interrupted();
 			} else {
 				jedis.decr("a");
-				System.out.println(name + " 锁成功后，操作减一后查询值为" + jedis.get("a"));
+				System.out.println(name + " ��ȡ���ɹ����Լ�֮��  a ����" + jedis.get("a"));
 			}
 
 			try { // �ͷ���
@@ -58,7 +58,9 @@ class MyThread extends Thread {
 //		jedis.close();
 	}
 
-	/**尝试获取锁锁
+//	
+	// ���Ի�ȡ��
+	/**
 	 * @param jedis
 	 * @param lockKey
 	 * @param requestId
@@ -78,11 +80,12 @@ class MyThread extends Thread {
 	}
 
 	/**
-	 * 释放锁
-	 * @param jedis 
-	 * @param lockKey 
+	 * �ͷŷֲ�ʽ��
+	 * 
+	 * @param jedis     Redis�ͻ���
+	 * @param lockKey   ��
 	 * @param requestId 
-	 * @return 
+	 * @return �Ƿ��ͷųɹ�
 	 */
 	public static boolean releaseDistributedLock(Jedis jedis, String lockKey, String requestId) {
 
