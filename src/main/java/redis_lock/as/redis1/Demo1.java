@@ -9,7 +9,7 @@ public class Demo1 {
 
 	public static void main(String[] args) {
 			for (int i = 0; i < 5; i++) {
-				new MyThread("Ïß³Ì" + i).start();
+				new MyThread("çº¿ç¨‹" + i).start();
 			}
 	}
 }
@@ -33,34 +33,32 @@ class MyThread extends Thread {
 		String requestId = UUID.randomUUID().toString();
 		int expireTime = 5000;
 
-		System.out.println(name + " »ñÈ¡ËøÖ®Ç°  a µÈÓÚ " + jedis.get("a"));
+		System.out.println(name + "é”å‰å€¼ä¸º " + jedis.get("a"));
 
 		boolean b = get(jedis, lockKey, requestId, expireTime);
 		if (b) {
-			System.out.println(name + "»ñÈ¡Ëø³É¹¦" + "ÇëÇóIDÊÇ£º" + jedis.get("lockKey"));
-			if (Long.valueOf(jedis.get("a")) == 20) {
-				System.out.println("ÊÖËÙÂýÁË£¬ËùÓÐÉÌÆ·Òà±»ÇÀ¹ºÍê±Ï£¬");
-				// ÔõÃ´ÍË³ö
+			System.out.println(name + "é”æˆåŠŸåŽæŸ¥è¯¢å€¼ä¸º" + jedis.get("lockKey"));
+			if (Long.valueOf(jedis.get("a")) == 0) {
+				System.out.println("æ— è´§äº†");
+				// é€€å‡ºå½“å‰çº¿ç¨‹
 				Thread.currentThread().interrupted();
 			} else {
 				jedis.decr("a");
-				System.out.println(name + " »ñÈ¡Ëø³É¹¦£¬×Ô¼õÖ®ºó  a µÈÓÚ" + jedis.get("a"));
+				System.out.println(name + " é”æˆåŠŸåŽï¼Œæ“ä½œå‡ä¸€åŽæŸ¥è¯¢å€¼ä¸º" + jedis.get("a"));
 			}
 
-			try { // ÊÍ·ÅËø
+			try { // ï¿½Í·ï¿½ï¿½ï¿½
 				releaseDistributedLock(jedis, lockKey, requestId);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println(name + "»ñÈ¡ËøÊ§°Ü" + "ÇëÇóIDÊÇ£º" + jedis.get("lockKey"));
+			System.out.println(name + "ï¿½ï¿½È¡ï¿½ï¿½Ê§ï¿½ï¿½" + "ï¿½ï¿½ï¿½ï¿½IDï¿½Ç£ï¿½" + jedis.get("lockKey"));
 		}
 //		jedis.close();
 	}
 
-//	
-	// ³¢ÊÔ»ñÈ¡Ëø
-	/**
+	/**å°è¯•èŽ·å–é”é”
 	 * @param jedis
 	 * @param lockKey
 	 * @param requestId
@@ -80,12 +78,11 @@ class MyThread extends Thread {
 	}
 
 	/**
-	 * ÊÍ·Å·Ö²¼Ê½Ëø
-	 * 
-	 * @param jedis     Redis¿Í»§¶Ë
-	 * @param lockKey   Ëø
-	 * @param requestId ÇëÇó±êÊ¶
-	 * @return ÊÇ·ñÊÍ·Å³É¹¦
+	 * é‡Šæ”¾é”
+	 * @param jedis 
+	 * @param lockKey 
+	 * @param requestId 
+	 * @return 
 	 */
 	public static boolean releaseDistributedLock(Jedis jedis, String lockKey, String requestId) {
 
